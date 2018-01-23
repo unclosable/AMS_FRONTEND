@@ -1,0 +1,187 @@
+body
+{
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+.main
+{
+    &.panel
+    {
+        position: absolute;
+        right: 0;
+
+        width: 100%;
+        height: 100%;
+        margin: 0 auto;
+    }
+    &.menu
+    {
+        position: absolute;
+        left: 0;
+
+        width: 100%;
+        height: 100%;
+        margin: 0 auto;
+        .top
+        {
+            position: inherit;
+            top: 0;
+
+            width: 100%;
+            margin: 0 auto;
+        }
+        .bottom
+        {
+            position: inherit;
+            bottom: 0;
+
+            width: 100%;
+            margin: 0 auto;
+        }
+    }
+}
+.leftTopIcon
+{
+    position: absolute;
+    z-index: 999;top: 5px; left: 5px;
+}
+.middleDiv
+{
+    position: fixed;
+    top: 50%;
+    left: 50%;
+
+    display: inline;
+
+    transform: translate(-50%, -50%);
+}
+.helloFront
+{
+    font-family: fantasy;
+    font-size: -webkit-xxx-large;
+    font-weight: bolder;
+
+    display: block;
+}
+.right-bottom
+{
+    position: absolute;
+    z-index: 999;
+    right: 3px;
+    bottom: 3px;
+}
+.leftBottomBtn
+{
+    position: absolute;
+    bottom: 0;
+
+    width: 100%;
+    height: 50px;
+}
+.leftTopMenu
+{
+    overflow: auto;
+
+    width: 110%;
+    height: 100%;
+}
+
+.hiddenOvweflow
+{
+    position: absolute;
+    top: 0;
+    bottom: 50px;
+
+    overflow: hidden;
+
+    width: 100%;
+}
+.offerSlider
+{
+    position: absolute;
+    left: -50%;
+
+    height: 100%;
+}
+.up-to-down-appear
+{
+    transform: translate(0, -45%);
+
+    opacity: 10;
+}
+
+.offerSub
+{
+    position: absolute !important;
+    left: 120%;
+}
+.sort-div
+{
+    display: flex;
+
+    width: 900px;
+    height: 400px;
+    margin: 20px;
+
+    background-color: #4c8bf5;
+    .sort-item
+    {
+        position: relative;
+
+        flex: 1;
+
+        height: 100%;
+
+        border: 1px solid #ddd ;
+        &.act
+        {
+            background-color: #ffa500;
+        }
+        &.forcus
+        {
+            background-color: #cf000c;
+        }
+        .top
+        {
+            position: relative;
+
+            background-color: #98b8b7;
+            .front
+            {
+                position: absolute;
+                bottom: 0;
+
+                width: 100%;
+
+                text-align: center;
+            }
+        }
+    };
+}
+.sort-sub
+{
+    // position: absolute !important;
+    bottom: 10%;
+    left: 10%;
+}
+
+.sort-reset
+{
+    // position: absolute !important;
+    bottom: 10%;
+    left: 20%;
+}
+.sort-card1
+{
+    position: fixed;
+    top: 100px;
+    left: 100px;
+}
+.sort-card2
+{
+    position: fixed;
+    top: 300px;
+    left: 100px;
+}

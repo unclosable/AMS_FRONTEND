@@ -1,0 +1,27 @@
+.example-enter
+{
+    transform: translate(50%, 0);
+
+    opacity: 0;
+}
+
+.example-enter.example-enter-active
+{
+    transition: opacity 1500ms linear, transform 1200ms ease-out;
+    transform: translate(0, 0);
+
+    opacity: 1;
+}
+
+.example-leave
+{
+    opacity: 1;
+}
+
+.example-leave.example-leave-active
+{
+    transition: opacity 1200ms ease-in, transform 1200ms ease-out;
+    transform: translate(50%, 0);
+
+    opacity: .01;
+}
