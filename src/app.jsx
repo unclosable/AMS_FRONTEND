@@ -10,6 +10,7 @@ import {ConnectedRouter, routerReducer, routerMiddleware, push} from 'react-rout
 import {Layout} from 'antd';
 const {Content} = Layout;
 //component
+import Login from './main/login.jsx';
 import MainHeader from './main/main.header.jsx';
 import MainMenu from './main/main.menu.jsx';
 import MainBreadcrumb from './main/main.breadcrumb.jsx';
@@ -49,6 +50,12 @@ const store = createStore(combineReducers(Object.assign(menuStore, {router: rout
 // }
 
 class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      login: false
+    }
+  }
   render() {
     const routes = []
     let componentKey = 0;
@@ -56,33 +63,43 @@ class App extends React.Component {
       if (pathMap[path].component) 
         routes.push(<Route path={path} exact={true} key={componentKey++} component={pathMap[path].component}/>)
     };
-    return (<Provider store={store}>
-      <ConnectedRouter history={history}>
-        <Layout className="mainLayout">
-          <MainHeader/>
-          <Layout>
-            <MainMenu/>
-            <Layout style={{
-                marginLeft: 200
-              }}>
-              <MainBreadcrumb/>
-              <Content style={{
-                  margin: '0px 16px 0 16px',
-                  height: '100%',
-                  overflow: 'auto'
+    if (this.state.login) {
+      return (<Provider store={store}>
+        <ConnectedRouter history={history}>
+          <Layout className="mainLayout">
+            <MainHeader/>
+            <Layout>
+              <MainMenu/>
+              <Layout style={{
+                  marginLeft: 200
                 }}>
-                <Switch>
-                  {routes}
-                </Switch>
-              </Content>
+                <MainBreadcrumb/>
+                <Content style={{
+                    margin: '0px 16px 0 16px',
+                    height: '100%',
+                    overflow: 'auto'
+                  }}>
+                  <Switch>
+                    {routes}
+                  </Switch>
+                </Content>
+              </Layout>
             </Layout>
           </Layout>
-        </Layout>
-      </ConnectedRouter>
-    </Provider>);
+        </ConnectedRouter>
+      </Provider>);
+    } else {
+      return (<Provider store={store}>
+        <ConnectedRouter history={history}>
+          <Login loginFun={() => {
+              this.setState({login: true});
+            }}></Login>
+        </ConnectedRouter>
+      </Provider>);
+    }
+
   }
 }
-
 export default function() {
   react_dom.render(<App/>, document.getElementById('root'));
 }

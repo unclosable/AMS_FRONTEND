@@ -1,12 +1,6 @@
 import {hex_md5} from './md5.js'
-
-function setCookie(name, value) {
-  let Days = 30;
-  let exp = new Date();
-  exp.setTime(exp.getTime() + Days * 24 * 60 * 60 * 1000);
-  document.cookie = name + "=" + escape(value) + ";expires=" + exp.toGMTString() + ";domain=" + baseHost;
-}
-
+import {getCookie, setCookie} from './cookie.js'
+const cookieKey = 'UfWWs3XSY6WpU0kh';
 let cookie = void 0;
 let baseHost = void 0;
 (function() {
@@ -18,6 +12,14 @@ let baseHost = void 0;
     });
   });
 })();
+export const loged = () => {
+  let cookie = getCookie(cookieKey);
+  if (cookie == 'admin') {
+    return true;
+  } else {
+    return false;
+  }
+}
 export const post = (url, data) => {
   const body = JSON.stringify(data);
   return fetch('//' + baseHost + url, {
