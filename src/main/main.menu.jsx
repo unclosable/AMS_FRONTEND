@@ -9,7 +9,40 @@ class MainMenu extends React.Component {
     super(props);
     const {location} = this.props;
     const path = pathMap[location.pathname];
-    console.log(path);
+
+    let leafKey = 0;
+    let defaultSelectedKeys = 0,
+      defaultOpenKeys = 1;
+    const body = menuList.map((menu) => {
+      let re = {
+        key: leafKey++,
+        iconType: menu.icon,
+        text: menu.text
+      };
+      let selected = false;
+      if (path && path.parentPath.filter(path => path == menu.path).length != 0) {
+        selected = true;
+        defaultOpenKeys = re.key;
+      }
+      re.item = menu.children.map((leaf) => {
+        let item = {
+          key: leafKey++,
+          path: menu.path + leaf.path,
+          text: leaf.text
+        };
+        if (selected && path.path == leaf.path) {
+          defaultSelectedKeys = item.key;
+        }
+        return item;
+      });
+      return re;
+    });
+    this.state = {
+      path: path,
+      body: body,
+      defaultSelectedKeys: defaultSelectedKeys,
+      defaultOpenKeys: defaultOpenKeys
+    }
   }
   render() {
     let leafKey = 0;
@@ -19,20 +52,20 @@ class MainMenu extends React.Component {
         position: 'fixed',
         left: 0
       }}>
-      <Menu mode="inline" defaultSelectedKeys={['1']} defaultOpenKeys={['sub1']} style={{
+      <Menu mode="inline" defaultSelectedKeys={[this.state.defaultSelectedKeys + '']} defaultOpenKeys={[this.state.defaultOpenKeys + '']} style={{
           height: '100%',
           borderRight: 0,
           minHeight: 280
         }}>
         {
-          menuList.map((menus, index) => <SubMenu key={menus.text + index} title={<span> < Icon type = {
-              menus.icon
+          this.state.body.map((menu) => <SubMenu key={menu.key} title={<span> < Icon type = {
+              menu.iconType
             } /> {
-              menus.text
+              menu.text
             }
             </span>}>{
-              menus.children.map((leaf) => <Menu.Item key={leafKey++}>
-                <Link to={menus.path + leaf.path}>{leaf.text}</Link>
+              menu.item.map((leaf) => <Menu.Item key={leaf.key}>
+                <Link to={leaf.path}>{leaf.text}</Link>
               </Menu.Item>)
             }</SubMenu>)
         }

@@ -2,7 +2,10 @@ import TestMain from '../component/test2.jsx';
 import TestMain1 from '../component/test20.jsx';
 export const pathMap = {
   '/': {
-    text: 'HOME'
+    text: 'HOME',
+    parentPath: [],
+    path: '/',
+    component: TestMain
   }
 };
 export const menuList = [
@@ -105,6 +108,7 @@ const mapMake = (parentPath, children) => {
     re[leafPath] = {
       text: leaf.text,
       parentPath: parentPath,
+      path: leaf.path,
       component: leaf.component
     };
     children.forEach((c) => Object.assign(re, c));

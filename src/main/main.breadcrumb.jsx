@@ -5,7 +5,7 @@ import {pathMap} from '../route/index.jsx'
 class MainBreadcrumb extends React.Component {
   render() {
     const {location} = this.props;
-    const path = pathMap[location.pathname];
+    let path = pathMap[location.pathname];
     let item;
     if (path && path.parentPath) {
       item = path.parentPath.map(p => {
@@ -13,6 +13,11 @@ class MainBreadcrumb extends React.Component {
           {pathMap[p].text}
         </Breadcrumb.Item>
       });
+    }
+    if (!path) {
+      path = {
+        text: '未知页面'
+      }
     }
     let key = 0;
     return <Breadcrumb style={{
