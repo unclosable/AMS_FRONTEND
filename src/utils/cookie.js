@@ -11,5 +11,6 @@ export const setCookie = (key, value) => {
   let Days = 30;
   let exp = new Date();
   exp.setTime(exp.getTime() + Days * 24 * 60 * 60 * 1000);
-  document.cookie = name + "=" + escape(value) + ";expires=" + exp.toGMTString();
+  document.cookie = key + "=" + escape(value) + ";expires=" + exp.toGMTString();
+  console.log(document.cookie);
 }

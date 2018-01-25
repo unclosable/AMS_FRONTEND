@@ -1,10 +1,106 @@
 import '../../less/login.less';
-import {message, Layout, Input, Icon, Button} from 'antd';
+import '../../less/transition_login.less';
+import {login} from '../utils/http.js';
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+import {
+  message,
+  Layout,
+  Input,
+  Icon,
+  Button,
+  Spin
+} from 'antd';
+
+const LONGIN = 'LOGIN';
+const FORGETPWD = 'FORGETPWD';
+const LOADING = 'LOADING';
+
+class LoginPanel extends React.Component {
+  render() {
+    const {
+      userName,
+      pwd,
+      submit,
+      onChangeUserName,
+      emitEmpty,
+      changeMode
+    } = this.props;
+    const userNameSuffix = userName
+      ? <Icon type="close-circle" onClick={() => emitEmpty('userName')}/>
+      : null;
+    const pwdNameSuffix = pwd
+      ? <Icon type="close-circle" onClick={() => emitEmpty('pwd')}/>
+      : null;
+    return <div id='login-input-div'>
+      <div id='login-input-header'>
+        <div className='icon'>AMS</div>
+        <div className='sysname'>Asset Management System</div>
+      </div>
+      <div id='login-input-center'>
+        <Input placeholder="Enter your username" prefix={<Icon type = "user" style = {{ color: 'rgba(0,0,0,.25)' }}/>} suffix={userNameSuffix} value={userName} onChange={(e) => {
+            onChangeUserName('userName', e)
+          }}/>
+        <Input placeholder="Enter your password" type="password" prefix={<Icon type = "lock" style = {{ color: 'rgba(0,0,0,.25)' }}/>} suffix={pwdNameSuffix} value={pwd} onChange={(e) => {
+            onChangeUserName('pwd', e)
+          }}/></div>
+      <div id='login-input-submit'>
+        <Button onClick={submit}>
+          Login<Icon type="right"/>
+        </Button>
+        <Button onClick={() => {
+            changeMode(FORGETPWD);
+          }}>
+          Forget Password
+          <Icon type="frown"/>
+        </Button>
+      </div>
+    </div>
+  }
+}
+class ForgetPwd extends React.Component {
+  render() {
+    const {changeMode} = this.props;
+    return <div id='login-input-div'>
+      <div id='login-input-header'>
+        <div className='icon'>AMS</div>
+        <div className='sysname'>Asset Management System</div>
+      </div>
+      <div id='login-input-center'>
+        <span>暂时不支持找回密码，请联系系统管理员</span>
+      </div>
+      <div id='login-input-submit'>
+        <Button onClick={() => {
+            changeMode(LONGIN);
+          }}>
+          OK<Icon type="right"/>
+        </Button>
+      </div>
+    </div>
+  }
+}
+
+class Loading extends React.Component {
+  render() {
+    const {changeMode} = this.props;
+    return <div id='login-input-div'>
+      <div id='login-input-header'>
+        <div className='icon'>AMS</div>
+        <div className='sysname'>Asset Management System</div>
+      </div>
+      <div id='login-input-center'>
+        <Spin size="large"></Spin>
+      </div>
+      <div id='login-input-submit'></div>
+    </div>
+  }
+}
+
 class Login extends React.Component {
   constructor(props) {
     super(props);
     const loginFun = props.loginFun;
     this.state = {
+      mode: LONGIN,
       userName: '',
       pwd: '',
       loginFun: loginFun
@@ -24,8 +120,51 @@ class Login extends React.Component {
   componentDidMount() {
     this.__initCanvas()
   }
-  __initCanvas(canvas) {
 
+  changeMode(mode) {
+    this.setState({mode: mode});
+  }
+
+  __submit() {
+    let {userName, pwd, loginFun} = this.state;
+    this.changeMode(LOADING);
+    login({userName, pwd}).then(() => {
+      message.info('Login Success');
+      loginFun();
+    }).catch(() => {
+      setTimeout(() => {
+        message.error('Wrong Login Infomation');
+        this.changeMode(LONGIN);
+      }, 3000);
+    })
+  }
+  render() {
+    const {userName, pwd, mode} = this.state;
+    let layout;
+    switch (mode) {
+      case LONGIN:
+        layout = <LoginPanel key='1' userName={userName} pwd={pwd} submit={() => this.__submit()} onChangeUserName={(key, value) => this.onChangeUserName(key, value)} emitEmpty={(key) => {
+            this.emitEmpty(key)
+          }} changeMode={(mode) => this.changeMode(mode)}/>
+        break;
+      case FORGETPWD:
+        layout = <ForgetPwd key='2' changeMode={(mode) => this.changeMode(mode)}/>
+        break;
+      case LOADING:
+        layout = <Loading key='3'/>
+        break;
+      default:
+        layout = <div id='login-input-div'></div>
+
+    }
+    return <Layout className="mainLayout">
+      <ReactCSSTransitionGroup transitionName="example" transitionAppear={true} transitionAppearTimeout={1200} transitionEnterTimeout={1200} transitionLeaveTimeout={1200} transitionEnter={true} transitionLeave={true}>
+        {[layout]}
+      </ReactCSSTransitionGroup>
+      <canvas id='login-canvas' className='login-canvas' ref={node => this.canvas = node}></canvas>
+    </Layout>
+  }
+  __initCanvas(canvas) {
     document.addEventListener('touchmove', function(e) {
       e.preventDefault()
     })
@@ -87,45 +226,6 @@ class Login extends React.Component {
     document.ontouchstart = i
     i()
 
-  }
-  __submit() {
-    let {userName, pwd, loginFun} = this.state;
-    if (userName === 'admin' && pwd === 'admin') {
-      loginFun();
-    } else {
-      message.error('Wrong Login Infomation');
-    }
-  }
-  render() {
-    const {userName, pwd} = this.state;
-    const userNameSuffix = userName
-      ? <Icon type="close-circle" onClick={() => this.emitEmpty('userName')}/>
-      : null;
-    const pwdNameSuffix = pwd
-      ? <Icon type="close-circle" onClick={() => this.emitEmpty('pwd')}/>
-      : null;
-
-    return <Layout className="mainLayout">
-      <div id='login-input-div'>
-        <div id='login-input-header'>
-          <div className='icon'>AMS</div>
-          <div className='sysname'>Asset Management System</div>
-        </div>
-        <div id='login-input-center'>
-          <Input placeholder="Enter your username" prefix={<Icon type = "user" style = {{ color: 'rgba(0,0,0,.25)' }}/>} suffix={userNameSuffix} value={userName} onChange={(e) => {
-              this.onChangeUserName('userName', e)
-            }}/>
-          <Input placeholder="Enter your password" type="password" prefix={<Icon type = "lock" style = {{ color: 'rgba(0,0,0,.25)' }}/>} suffix={pwdNameSuffix} value={pwd} onChange={(e) => {
-              this.onChangeUserName('pwd', e)
-            }}/></div>
-        <div id='login-input-submit'>
-          <Button onClick={() => this.__submit()}>
-            Login<Icon type="right"/>
-          </Button>
-        </div>
-      </div>
-      <canvas id='login-canvas' className='login-canvas' ref={node => this.canvas = node}></canvas>
-    </Layout>
   }
 }
 export default Login;

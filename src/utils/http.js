@@ -3,15 +3,15 @@ import {getCookie, setCookie} from './cookie.js'
 const cookieKey = 'UfWWs3XSY6WpU0kh';
 let cookie = void 0;
 let baseHost = void 0;
-(function() {
-  baseHost = config.SERVER_HOST + ':' + config.SERVER_PORT
-  fetch('//' + baseHost + '/c').then((re) => {
-    re.text().then((t) => {
-      cookie = t.replace(/-/g, '');
-      setCookie('token', cookie);
-    });
-  });
-})();
+// (function() {
+//   baseHost = config.SERVER_HOST + ':' + config.SERVER_PORT
+//   fetch('//' + baseHost + '/c').then((re) => {
+//     re.text().then((t) => {
+//       cookie = t.replace(/-/g, '');
+//       setCookie('token', cookie);
+//     });
+//   });
+// })();
 export const loged = () => {
   let cookie = getCookie(cookieKey);
   if (cookie == 'admin') {
@@ -32,4 +32,15 @@ export const post = (url, data) => {
     },
     body: body
   });
+}
+export const login = (data) => {
+  const body = JSON.stringify(data);
+  return new Promise((re, rej) => {
+    if (data.userName === 'admin' && data.pwd === 'admin') {
+      setCookie(cookieKey, 'admin');
+      re();
+    } else {
+      rej();
+    }
+  })
 }
