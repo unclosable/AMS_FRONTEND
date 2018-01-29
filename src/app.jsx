@@ -15,6 +15,7 @@ import Login from './main/login.jsx';
 import MainHeader from './main/main.header.jsx';
 import MainMenu from './main/main.menu.jsx';
 import MainBreadcrumb from './main/main.breadcrumb.jsx';
+import {mainViewWrapper} from './component/mainView.jsx';
 import TestMain from './component/test2.jsx';
 import {menuList, pathMap} from './route/index.jsx'
 //login utils
@@ -59,7 +60,7 @@ class MainLayout extends React.Component {
     let componentKey = 0;
     for (let path in pathMap) {
       if (pathMap[path].component) 
-        routes.push(<Route path={path} exact={true} key={componentKey++} component={pathMap[path].component}/>)
+        routes.push(<Route path={path} exact={true} key={componentKey++} component={mainViewWrapper(pathMap[path].component)}/>)
     };
 
     return <Layout className="mainLayout"><MainHeader/>
@@ -72,7 +73,7 @@ class MainLayout extends React.Component {
           <Content style={{
               margin: '0px 16px 0 16px',
               height: '100%',
-              overflow: 'auto'
+              overflowX: 'hidden'
             }}>
             <Switch>
               {routes}

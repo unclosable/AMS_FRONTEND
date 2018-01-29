@@ -1,11 +1,12 @@
 import TestMain from '../component/test2.jsx';
 import TestMain1 from '../component/test20.jsx';
+import HelloHome from '../component/home/index.jsx';
 export const pathMap = {
   '/': {
     text: 'HOME',
     parentPath: [],
     path: '/',
-    component: TestMain
+    component: HelloHome
   }
 };
 export const menuList = [

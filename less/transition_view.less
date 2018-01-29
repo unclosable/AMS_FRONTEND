@@ -1,0 +1,103 @@
+.mainView-enter
+{
+    opacity: .01;
+}
+
+.mainView-enter.mainView-enter-active
+{
+    transition: opacity 1s ease-in;
+
+    opacity: 1;
+}
+
+.mainView-leave
+{
+    opacity: 1;
+}
+
+.mainView-leave.mainView-leave-active
+{
+    transition: opacity 300ms ease-in,transform 1200ms;
+    transform: translate(-150%, 0);
+
+    opacity: .01;
+}
+.mainView-appear
+{
+    opacity: .01;
+}
+
+.mainView-appear.mainView-appear-active
+{
+    transition: opacity 1s ease-in;
+
+    opacity: 1;
+}
+.main-view-appear
+{
+    -webkit-transform: translateX(30px);
+       -moz-transform: translateX(30px);
+        -ms-transform: translateX(30px);
+         -o-transform: translateX(30px);
+            transform: translateX(30px);
+
+    opacity: 0;
+}
+
+.main-view-appear.main-view-appear-active
+{
+    transition: all .6s linear;
+    -webkit-transform: translateX(0);
+       -moz-transform: translateX(0);
+        -ms-transform: translateX(0);
+         -o-transform: translateX(0);
+            transform: translateX(0);
+
+    opacity: 1;
+}
+.main-view-enter
+{
+    -webkit-transform: translateX(30px);
+       -moz-transform: translateX(30px);
+        -ms-transform: translateX(30px);
+         -o-transform: translateX(30px);
+            transform: translateX(30px);
+
+    opacity: 0;
+}
+.main-view-enter.main-view-enter-active
+{
+    transition: all .2s linear .4s;
+    -webkit-transform: translateX(0);
+       -moz-transform: translateX(0);
+        -ms-transform: translateX(0);
+         -o-transform: translateX(0);
+            transform: translateX(0);
+
+    opacity: 1;
+}
+.main-view-leave
+{
+    -webkit-transform: translateX(0);
+       -moz-transform: translateX(0);
+        -ms-transform: translateX(0);
+         -o-transform: translateX(0);
+            transform: translateX(0);
+
+    opacity: 1.0;
+}
+.main-view-leave.main-view-leave-active
+{
+    position: absolute;
+
+    width: 100%;
+
+    transition: all .2s linear;
+    -webkit-transform: translateX(-30px);
+       -moz-transform: translateX(-30px);
+        -ms-transform: translateX(-30px);
+         -o-transform: translateX(-30px);
+            transform: translateX(-30px);
+
+    opacity: 0;
+}
