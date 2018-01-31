@@ -1,5 +1,5 @@
 import {hex_md5} from './md5.js'
-import {getCookie, setCookie} from './cookie.js'
+import {getCookie, setCookie, deleteCookie} from './cookie.js'
 const cookieKey = 'UfWWs3XSY6WpU0kh';
 let cookie = void 0;
 let baseHost = void 0;
@@ -43,4 +43,7 @@ export const login = (data) => {
       rej();
     }
   })
+}
+export const logout = () => {
+  deleteCookie(cookieKey);
 }

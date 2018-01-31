@@ -96,34 +96,34 @@ export const menuList = [
     ]
   }
 ]
-const mapMake = (parentPath, children) => {
-  return children.map((leaf) => {
+const mapMake = ( parentPath, children ) => {
+  return children.map( ( leaf ) => {
     let leafPath = parentPath[parentPath.length - 1] + leaf.path;
     let children = leaf.children
-      ? mapMake([
+      ? mapMake( [
         ...parentPath,
         leafPath
-      ], leaf.children)
+      ], leaf.children )
       : [];
     let re = {};
-    re[leafPath] = {
+    re[ leafPath ] = {
       text: leaf.text,
       parentPath: parentPath,
       path: leaf.path,
       component: leaf.component
     };
-    children.forEach((c) => Object.assign(re, c));
+    children.forEach( ( c ) => Object.assign( re, c ) );
     return re
-  })
+  } )
 };
-(() => {
-  menuList.forEach((menu) => {
+( () => {
+  menuList.forEach( ( menu ) => {
     const menuPath = menu.path;
-    pathMap[menuPath] = {
+    pathMap[ menuPath ] = {
       text: menu.text,
       parentPath: []
     }
-    let childrenMap = mapMake([menuPath], menu.children);
-    childrenMap.forEach((c) => Object.assign(pathMap, c));
-  });
-})();
+    let childrenMap = mapMake( [menuPath], menu.children );
+    childrenMap.forEach( ( c ) => Object.assign( pathMap, c ) );
+  } );
+} )();

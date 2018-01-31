@@ -19,7 +19,7 @@ import {mainViewWrapper} from './component/mainView.jsx';
 import TestMain from './component/test2.jsx';
 import {menuList, pathMap} from './route/index.jsx'
 //login utils
-import {loged} from './utils/http.js';
+import {loged, logout} from './utils/http.js';
 //transition
 import '../less/transition_main.less';
 const history = createHistory();
@@ -63,7 +63,7 @@ class MainLayout extends React.Component {
         routes.push(<Route path={path} exact={true} key={componentKey++} component={mainViewWrapper(pathMap[path].component)}/>)
     };
 
-    return <Layout className="mainLayout"><MainHeader/>
+    return <Layout className="mainLayout"><MainHeader logoutFunc={this.props.logoutFunc}/>
       <Layout>
         <MainMenu/>
         <Layout style={{
@@ -101,7 +101,10 @@ class App extends React.Component {
     };
     let layout;
     if (this.state.login) {
-      layout = <MainLayout key='1'></MainLayout>
+      layout = <MainLayout key='1' logoutFunc={() => {
+          logout();
+          this.setState({login: false});
+        }}></MainLayout>
     } else {
       layout = <Login key='2' loginFun={() => {
           this.setState({login: true});

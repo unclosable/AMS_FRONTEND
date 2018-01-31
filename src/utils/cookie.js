@@ -12,5 +12,13 @@ export const setCookie = (key, value) => {
   let exp = new Date();
   exp.setTime(exp.getTime() + Days * 24 * 60 * 60 * 1000);
   document.cookie = key + "=" + escape(value) + ";expires=" + exp.toGMTString();
-  console.log(document.cookie);
+}
+
+export const deleteCookie = (key) => {
+  let exp = new Date();
+  exp.setTime(exp.getTime() - 1);
+  let cval = getCookie(key);
+  if (cval != null) {
+    document.cookie = key + "=" + cval + ";expires=" + exp.toGMTString();
+  }
 }
