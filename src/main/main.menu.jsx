@@ -7,6 +7,8 @@ import {connect} from 'react-redux';
 class MainMenu extends React.Component {
   constructor(props) {
     super(props);
+  }
+  render() {
     const {location} = this.props;
     const path = pathMap[location.pathname];
 
@@ -37,28 +39,19 @@ class MainMenu extends React.Component {
       });
       return re;
     });
-    this.state = {
-      path: path,
-      body: body,
-      defaultSelectedKeys: defaultSelectedKeys,
-      defaultOpenKeys: defaultOpenKeys
-    }
-  }
-  render() {
-    let leafKey = 0;
     return <Sider width={200} style={{
         overflow: 'auto',
         height: '100vh',
         position: 'fixed',
         left: 0
       }}>
-      <Menu mode="inline" defaultSelectedKeys={[this.state.defaultSelectedKeys + '']} defaultOpenKeys={[this.state.defaultOpenKeys + '']} style={{
+      <Menu mode="inline" selectedKeys={[defaultSelectedKeys + '']} defaultOpenKeys={[defaultOpenKeys + '']} style={{
           height: '100%',
           borderRight: 0,
           minHeight: 280
         }}>
         {
-          this.state.body.map((menu) => <SubMenu key={menu.key} title={<span> < Icon type = {
+          body.map((menu) => <SubMenu key={menu.key} title={<span> < Icon type = {
               menu.iconType
             } /> {
               menu.text
