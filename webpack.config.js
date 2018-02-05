@@ -18,7 +18,12 @@ const plugins = config.DEV
       sourceMap: true
     })];
 
+const sourceMapSet = config.DEV
+  ? "#eval-source-map"
+  : "";
+
 module.exports = {
+  devtool: sourceMapSet,
   entry: entry, //已多次提及的唯一入口文件
   output: {
     path: __dirname + "/build", //打包后的文件存放的地方
@@ -47,6 +52,9 @@ module.exports = {
         //less
         test: /\.less$/,
         loader: 'style-loader!css-loader!less-loader'
+      }, {
+        test: /\.svg$/,
+        loader: 'url-loader?limit=8192!svgo-loader'
       }, {
         //css
         test: /\.css$/,

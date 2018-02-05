@@ -36,7 +36,7 @@
 }
 #login-input-center
 {
-    height: 50%;
+    height: 45%;
     padding: 15px;
     span
     {
@@ -55,9 +55,24 @@
         vertical-align: middle;
     }
 }
+
+#login-companycheck
+{
+    position: relative;
+
+    height: 10%;
+    padding: 0 25px 0 25px;
+    div
+    {
+        display: inline-block;
+
+        margin: 0 10px 0 0;
+    }
+}
 #login-input-submit
 {
-    height: 25%;
+    height: 20%;
+    padding: 10px 0 0 0;
     button:first-child
     {
         position: absolute;
@@ -96,4 +111,64 @@
 .anticon-close-circle:active
 {
     color: #666;
+}
+
+#rfd-icon
+{
+    position: relative;
+
+    width: 15px;
+    height: 15px;
+
+    background-image: url(../img/rfd_diss.svg);
+}
+#rfd-icon.checked:after
+{
+    position: absolute;top: 16px;
+
+    width: 17px;height: 3px;content: '';border-radius: 0;background: #eeb422;
+}
+#rfd-icon.checked
+{
+    width: 15px;
+    height: 15px;
+
+    background-image: url(../img/rfd.svg);
+}
+#rfd-icon:hover
+{
+    width: 15px;
+    height: 15px;
+
+    background-image: url(../img/rfd.svg);
+}
+
+#hy-icon
+{
+    position: relative;
+
+    width: 15px;
+    height: 15px;
+
+    background-image: url(../img/hy_diss.svg);
+}
+#hy-icon.checked
+{
+    width: 15px;
+    height: 15px;
+
+    background-image: url(../img/hy.svg);
+}
+#hy-icon.checked:after
+{
+    position: absolute;top: 16px;
+
+    width: 17px;height: 3px;content: '';border-radius: 0;background: #eeb422;
+}
+#hy-icon:hover
+{
+    width: 15px;
+    height: 15px;
+
+    background-image: url(../img/hy.svg);
 }

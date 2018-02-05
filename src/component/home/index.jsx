@@ -32,6 +32,8 @@ class HelloHome extends React.Component {
               2018-01-29 添加动画框架以及HOME页面</Timeline.Item>
             <Timeline.Item color="green">
               2018-01-31 路由全部OK，登出DONE</Timeline.Item>
+            <Timeline.Item color="green">
+              2018-02-05 对接后端登陆接口，心跳接口，用户信息获取接口以及前端界面动作</Timeline.Item>
           </Timeline>
         </Panel>
         <Panel header="参与人员" key="4">
