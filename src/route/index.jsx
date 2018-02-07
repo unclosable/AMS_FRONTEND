@@ -1,6 +1,9 @@
 import TestMain from '../component/test2.jsx';
 import TestMain1 from '../component/test20.jsx';
 import HelloHome from '../component/home/index.jsx';
+import DeviceIndex from '../component/basic_device/index.jsx';
+import Materials from '../component/basic_materials/index.jsx';
+import Warehouse from '../component/basic_warehouses/index.jsx';
 export const pathMap = {
   '/': {
     text: 'HOME',
@@ -11,6 +14,25 @@ export const pathMap = {
 };
 export const menuList = [
   {
+    text: "基础数据",
+    icon: "api",
+    path: "/basic",
+    children: [
+      {
+        text: "设备",
+        path: "/device",
+        component: DeviceIndex
+      }, {
+        text: "物料",
+        path: "/materials",
+        component: Materials
+      }, {
+        text: "仓库",
+        path: "/warehouse",
+        component: Warehouse
+      }
+    ]
+  }, {
     text: "用户权限",
     icon: "user",
     path: "/usr",

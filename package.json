@@ -24,6 +24,7 @@
     "jsx-loader": "^0.13.2",
     "less": "^2.7.3",
     "less-loader": "^4.0.5",
+    "query-string": "^5.1.0",
     "react": "^16.1.0",
     "react-addons-css-transition-group": "^15.6.2",
     "react-dom": "^16.1.0",
@@ -41,7 +42,7 @@
     "webpack-merge": "^4.1.1"
   },
   "dependencies": {
-    "antd": "^2.13.11",
+    "antd": "^3.2.0",
     "material-ui": "^0.19.4"
   }
 }
