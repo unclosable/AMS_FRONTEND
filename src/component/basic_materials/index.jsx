@@ -15,7 +15,8 @@ import { push } from "react-router-redux"
 import MainPanel from '../mainPanel.jsx';
 import queryString from 'query-string';
 import '../../../less/component_basic_device.less';
-import DeviceTypeSelect from '../base/device_type_selecter.jsx';
+import DeviceTypeSelect from '../base/materials_type_selecter.jsx';
+import { get } from '../../utils/http.js';
 const { Column, ColumnGroup } = Table;
 
 const columns = [
@@ -23,20 +24,20 @@ const columns = [
     title: '序号',
     dataIndex: "id"
   }, {
-    title: '设备类型',
-    dataIndex: 'name'
+    title: '物料类型',
+    dataIndex: 'dictType'
   }, {
     title: '物料名称',
-    dataIndex: 'age'
-  }, {
-    title: '品牌',
-    dataIndex: 'address'
+    dataIndex: 'dictName'
   }, {
     title: '规格型号',
     dataIndex: 'specification'
   }, {
+    title: '单位',
+    dataIndex: 'unitId'
+  }, {
     title: '状态',
-    dataIndex: 'enabled'
+    dataIndex: 'enableds'
   }, {
     title: '更新人',
     dataIndex: 'updatedBy'
@@ -50,13 +51,13 @@ const columns = [
 ];
 
 const data = [];
-for ( let i = 0; i < 46; i++ ) {
+for ( let i = 0; i < 1; i++ ) {
   data.push( { key: i, name: `Edward King ${ i }`, age: 32, address: `London, Park Lane no. ${ i }` } );
 }
-const paramParse = ( value ) => {
+const paramParse = ( value, defaultValue ) => {
   let re = parseInt( value );
-  if ( !re || re === -1 ) {
-    re = null;
+  if ( isNaN( re ) || re === -1 ) {
+    re = defaultValue;
   }
   return re;
 }
@@ -67,12 +68,14 @@ class Materials extends React.Component {
     const { deviceType, deviceState, deviceName } = queryString.parse( location.search );
     this.state = {
       deviceType: paramParse( deviceType ),
-      deviceState: paramParse( deviceState ),
+      deviceState: paramParse( deviceState, 0 ),
       deviceName: deviceName || "",
       selectedRowKeys: [], // Check here to configure the default column
       loading: false,
-      pushFunc: PUSH
+      pushFunc: PUSH,
+      data: data
     }
+    this.__load_data();
   }
   start() {
     this.setState( { loading: true } );
@@ -84,6 +87,8 @@ class Materials extends React.Component {
     this.setState( { selectedRowKeys } );
   }
   handleChange_deviceType( { key, name } ) {
+    console.log( key );
+    console.log( name );
     this.setState( { deviceType: key, deviceTypeName: name } );
   }
   handleChange_deviceState( event, index, deviceState ) {
@@ -101,7 +106,20 @@ class Materials extends React.Component {
   __reset_query() {
     this.state.pushFunc()
   }
-
+  __load_data() {
+    const { deviceType, deviceState, deviceName } = this.state;
+    get( '/materials', {
+      typeId: deviceType,
+      enabled: deviceState,
+      dictName: deviceName
+    } ).then( ( re ) => {
+      if ( re.status === 200 ) {
+        re.json().then( ( data ) => {
+          this.setState( { data } );
+        } )
+      }
+    } )
+  }
   render() {
     const { loading, selectedRowKeys } = this.state;
     const rowSelection = {
@@ -118,9 +136,8 @@ class Materials extends React.Component {
           <Col span={8}><TextField hintText="物料名称" floatingLabelText="物料名称" type="text" value={this.state.deviceName} onChange={( e ) => this.handleChange_deviceName( e )}/></Col>
           <Col span={8}>
             <SelectField floatingLabelText="状态" value={this.state.deviceState} onChange={( event, index, value ) => this.handleChange_deviceState( event, index, value )}>
-              <MenuItem value={-1} primaryText=""/>
-              <MenuItem value={1} primaryText="启用"/>
-              <MenuItem value={2} primaryText="废弃"/>
+              <MenuItem value={0} primaryText="启用"/>
+              <MenuItem value={1} primaryText="废弃"/>
             </SelectField>
           </Col>
         </Row>
@@ -138,7 +155,7 @@ class Materials extends React.Component {
           <Button size="small">导入</Button>
           <Button size="small">导出</Button>
         </Row>
-        <Table rowSelection={rowSelection} columns={columns} dataSource={data}/>
+        <Table rowSelection={rowSelection} columns={columns} dataSource={this.state.data}/>
       </MainPanel>
     </MuiThemeProvider>
   }
@@ -147,7 +164,7 @@ export default connect( state => {
   return { location: state.router.location }
 }, ( dispatch, ownProps ) => {
   return {
-    PUSH: ( url, search ) => {
+    PUSH: ( search ) => {
       dispatch( push( { search } ) )
     }
   }

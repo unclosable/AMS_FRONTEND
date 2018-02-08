@@ -5,19 +5,6 @@ import { Menu, Dropdown, Icon, message } from 'antd';
 import { get } from '../../utils/http.js';
 const SubMenu = Menu.SubMenu;
 
-const menu = ( <Menu>
-  <Menu.Item>1st menu item</Menu.Item>
-  <Menu.Item>2nd menu item</Menu.Item>
-  <SubMenu title="sub menu">
-    <Menu.Item>3rd menu item</Menu.Item>
-    <Menu.Item>4th menu item</Menu.Item>
-  </SubMenu>
-  <SubMenu title="disabled sub menu" disabled="disabled">
-    <Menu.Item>5d menu item</Menu.Item>
-    <Menu.Item>6th menu item</Menu.Item>
-  </SubMenu>
-</Menu> );
-
 class DropLay extends React.Component {
   constructor( props ) {
     super( props );
@@ -121,10 +108,10 @@ class DropLay extends React.Component {
             id,
             name
           }, index ) => {
-            get( '/dicts/' + id ).then( response => response.json().then( ( json ) => {
-              let update = {};
-              update['menus' + index] = json;
-              this.setState( update );
+            get( `/dicts/${ id }/details` ).then( response => response.json().then( ( json ) => {
+              this.setState( {
+                ['menus' + index]: json
+              } );
             } ) )
           } )
         } )

@@ -5,19 +5,6 @@ import { Menu, Dropdown, Icon, message } from 'antd';
 import { get } from '../../utils/http.js';
 const SubMenu = Menu.SubMenu;
 
-const menu = ( <Menu>
-  <Menu.Item>1st menu item</Menu.Item>
-  <Menu.Item>2nd menu item</Menu.Item>
-  <SubMenu title="sub menu">
-    <Menu.Item>3rd menu item</Menu.Item>
-    <Menu.Item>4th menu item</Menu.Item>
-  </SubMenu>
-  <SubMenu title="disabled sub menu" disabled="disabled">
-    <Menu.Item>5d menu item</Menu.Item>
-    <Menu.Item>6th menu item</Menu.Item>
-  </SubMenu>
-</Menu> );
-
 class DropLay extends React.Component {
   constructor( props ) {
     super( props );
@@ -108,6 +95,7 @@ class DropLay extends React.Component {
         }
       ]
     }
+
     this.__loading();
   }
   __loading() {
@@ -121,10 +109,10 @@ class DropLay extends React.Component {
             id,
             name
           }, index ) => {
-            get( '/dicts/' + id ).then( response => response.json().then( ( json ) => {
-              let update = {};
-              update['menus' + index] = json;
-              this.setState( update );
+            get( `/dicts/${ id }/details` ).then( response => response.json().then( ( json ) => {
+              this.setState( {
+                ['menus' + index]: json
+              } );
             } ) )
           } )
         } )
@@ -135,7 +123,7 @@ class DropLay extends React.Component {
   }
   render() {
     const { selectedKeys, onChange } = this.props;
-    return <Menu selectedKeys={[ selectedKeys ]} onClick={( { item, key, keyPath } ) => {
+    return <Menu selectedKeys={[ `${ selectedKeys }` ]} onClick={( { item, key, keyPath } ) => {
         onChange( { key, name: item.props.children[ 1 ] } )
       }}>
       {
@@ -158,9 +146,21 @@ class DropLay extends React.Component {
 class DeviceTypeSelect extends React.Component {
   constructor( props ) {
     super( props );
+    const { onChange, disabled } = this.props;
+    this.state = {
+      onChange,
+      disabled
+    }
+    this.__init( props );
+  }
+  __init( props ) {
+    const { value, onChange } = props;
+    if ( value ) 
+      get( `/dicts/details/${ value }` ).then( re => re.json().then( data => onChange( { key: parseInt( value ), name: data.name } ) ) )
   }
   render() {
-    const { text, value, onChange, disabled } = this.props;
+    const { onChange, disabled } = this.state;
+    const { text, value } = this.props;
     return <Dropdown overlay={<DropLay selectedKeys = {
         value
       }

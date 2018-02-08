@@ -1,4 +1,5 @@
 import {hex_md5} from './md5.js'
+import queryString from 'query-string';
 import {getCookie, setCookie, deleteCookie} from './cookie.js'
 const cookieKey = 'UfWWs3XSY6WpU0kh';
 let cookie = void 0;
@@ -30,22 +31,12 @@ export const logCheck = () => {
   return get('/validate', {access_token: cookie})
 }
 export const get = (uri, params) => {
-  let theUrl = uri;
+  let theUrl = uri + '?';
   if (!params || !params['access_token']) {
     params = Object.assign({}, params, {access_token: getCookie(cookieKey)});
   }
-  if (params) {
-    let paramsArray = [];
-    //拼接参数
-    Object.keys(params).forEach(key => paramsArray.push(key + '=' + params[key]))
-    if (theUrl.search(/\?/) === -1) {
-      theUrl += '?' + paramsArray.join('&')
-    } else {
-      theUrl += '&' + paramsArray.join('&')
-    }
-  }
   //fetch请求
-  return fetch('//' + baseHost + theUrl, {method: 'GET'})
+  return fetch('//' + baseHost + theUrl + queryString.stringify(params), {method: 'GET'})
 }
 export const post = (uri, data) => {
   const body = JSON.stringify(data);
