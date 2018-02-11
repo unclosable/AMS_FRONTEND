@@ -6,7 +6,6 @@ import {
   Col,
   Button
 } from 'antd';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import TextField from 'material-ui/TextField';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
@@ -66,7 +65,7 @@ class Warehouse extends React.Component {
 
   __query_submit() {
     const { organization, warehouseName } = this.state;
-    this.state.pushFunc( queryString.stringify( { organization, warehouseName } ) )
+    this.state.pushFunc( '/basic/warehouse', queryString.stringify( { organization, warehouseName } ) )
   }
   __reset_query() {
     this.state.pushFunc()
@@ -85,37 +84,36 @@ class Warehouse extends React.Component {
       onChange: ( selectedRowKeys ) => this.setState( { selectedRowKeys } )
     };
     const hasSelected = selectedRowKeys.length > 0;
-    return <MuiThemeProvider>
-      <MainPanel>
-        <Row>
-          <Col span={8}><OrganizationsSelect value={this.state.organization} onChange={( value ) => this.setState( { [ 'organization' ]: value } )}/></Col>
-          <Col span={8}>
-            <TextField hintText="仓库名称" floatingLabelText="仓库名称" type="text" value={this.state.warehouseName} onChange={( e ) => this.setState( { [ 'warehouseName' ]: e.target.value } )}/>
-          </Col>
-          <Col span={8}></Col>
-        </Row>
-        <Row>
-          <Col span={16}></Col>
-          <Col span={8} className="device-query-btn">
-            <Button onClick={() => this.__reset_query()}>重置</Button>
-            <Button type="primary" onClick={() => this.__query_submit()}>查询</Button>
-          </Col>
-        </Row>
-        <Row className="device-setting-btn">
-          <Button size="small">新增</Button>
-          <Button size="small">修改</Button>
-        </Row>
-        <Table rowSelection={rowSelection} columns={columns} dataSource={this.state.data}/>
-      </MainPanel>
-    </MuiThemeProvider>
+    return <MainPanel>
+      <Row>
+        <Col span={8}><OrganizationsSelect value={this.state.organization} onChange={( value ) => this.setState( { [ 'organization' ]: value } )}/></Col>
+        <Col span={8}>
+          <TextField hintText="仓库名称" floatingLabelText="仓库名称" type="text" value={this.state.warehouseName} onChange={( e ) => this.setState( { [ 'warehouseName' ]: e.target.value } )}/>
+        </Col>
+        <Col span={8}></Col>
+      </Row>
+      <Row>
+        <Col span={16}></Col>
+        <Col span={8} className="device-query-btn">
+          <Button onClick={() => this.__reset_query()}>重置</Button>
+          <Button type="primary" onClick={() => this.__query_submit()}>查询</Button>
+        </Col>
+      </Row>
+      <Row className="device-setting-btn">
+        <Button size="small" onClick={() => this.state.pushFunc( '/basic/warehouse/add' )}>新增</Button>
+        <Button size="small">修改</Button>
+      </Row>
+      <Table rowSelection={rowSelection} columns={columns} dataSource={this.state.data}/>
+    </MainPanel>
+
   }
 }
 export default connect( state => {
   return { location: state.router.location }
 }, ( dispatch, ownProps ) => {
   return {
-    PUSH: ( search ) => {
-      dispatch( push( { search } ) )
+    PUSH: ( pathname, search ) => {
+      dispatch( push( { pathname, search } ) )
     }
   }
 } )( Warehouse );

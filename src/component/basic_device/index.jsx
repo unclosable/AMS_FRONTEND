@@ -6,7 +6,6 @@ import {
   Col,
   Button
 } from 'antd';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import TextField from 'material-ui/TextField';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
@@ -15,7 +14,9 @@ import { push } from "react-router-redux"
 import MainPanel from '../mainPanel.jsx';
 import queryString from 'query-string';
 import '../../../less/component_basic_device.less';
-import DeviceTypeSelect from '../base/device_type_selecter.jsx';
+import DeviceTypeSelect from '../base/device_type_select.jsx';
+import DeviceNameSelect from '../base/name_select.jsx';
+import ReactCSSTransitionGroup from "react-addons-css-transition-group";
 const { Column, ColumnGroup } = Table;
 
 const columns = [
@@ -68,7 +69,7 @@ class Device extends React.Component {
     this.state = {
       deviceType: paramParse( deviceType ),
       deviceState: paramParse( deviceState ),
-      deviceName: deviceName || "",
+      deviceName: paramParse( deviceName ),
       selectedRowKeys: [], // Check here to configure the default column
       loading: false,
       pushFunc: PUSH
@@ -83,15 +84,11 @@ class Device extends React.Component {
   onSelectChange( selectedRowKeys ) {
     this.setState( { selectedRowKeys } );
   }
-  handleChange_deviceType( { key, name } ) {
-    this.setState( { deviceType: key, deviceTypeName: name } );
+  handleChange_deviceType( value ) {
+    this.setState( { deviceType: value, deviceName: null } );
   }
   handleChange_deviceState( event, index, deviceState ) {
     this.setState( { deviceState } );
-  }
-
-  handleChange_deviceName( e ) {
-    this.setState( { deviceName: e.target.value } )
   }
 
   __query_submit() {
@@ -109,38 +106,41 @@ class Device extends React.Component {
       onChange: ( selectedRowKeys ) => this.onSelectChange( selectedRowKeys )
     };
     const hasSelected = selectedRowKeys.length > 0;
-    return <MuiThemeProvider>
-      <MainPanel>
-        <Row>
-          <Col span={8}>
-            <DeviceTypeSelect disabled={true} text={this.state.deviceTypeName || "设备类型"} value={this.state.deviceType} onChange={( value ) => this.handleChange_deviceType( value )}/>
-          </Col>
-          <Col span={8}><TextField hintText="设备名称" floatingLabelText="设备名称" type="text" value={this.state.deviceName} onChange={( e ) => this.handleChange_deviceName( e )}/></Col>
-          <Col span={8}>
-            <SelectField floatingLabelText="状态" value={this.state.deviceState} onChange={( event, index, value ) => this.handleChange_deviceState( event, index, value )}>
-              <MenuItem value={-1} primaryText=""/>
-              <MenuItem value={1} primaryText="启用"/>
-              <MenuItem value={2} primaryText="废弃"/>
-            </SelectField>
-          </Col>
-        </Row>
-        <Row>
-          <Col span={16}></Col>
-          <Col span={8} className="device-query-btn">
-            <Button onClick={() => this.__reset_query()}>重置</Button>
-            <Button type="primary" onClick={() => this.__query_submit()}>查询</Button>
-          </Col>
-        </Row>
-        <Row className="device-setting-btn">
-          <Button size="small">新增</Button>
-          <Button size="small">启用</Button>
-          <Button size="small">废弃</Button>
-          <Button size="small">导入</Button>
-          <Button size="small">导出</Button>
-        </Row>
-        <Table rowSelection={rowSelection} columns={columns} dataSource={data}/>
-      </MainPanel>
-    </MuiThemeProvider>
+    const nameSelect = this.state.deviceType
+      ? <Col span={8}><DeviceNameSelect text="物料名称" typeid={this.state.deviceType} value={this.state.deviceName} onChange={( deviceName ) => this.setState( { deviceName } )}/></Col>
+      : null;
+    return <MainPanel>
+      <Row>
+        <Col span={8}>
+          <DeviceTypeSelect value={this.state.deviceType} onChange={( value ) => this.handleChange_deviceType( value )}/>
+        </Col>
+        <ReactCSSTransitionGroup transitionName="main-view" transitionAppear={true} transitionAppearTimeout={600} transitionEnterTimeout={600} transitionLeaveTimeout={200}>
+          {nameSelect}
+        </ReactCSSTransitionGroup>
+        <Col span={8}>
+          <SelectField floatingLabelText="状态" value={this.state.deviceState} onChange={( event, index, value ) => this.handleChange_deviceState( event, index, value )}>
+            <MenuItem value={-1} primaryText=""/>
+            <MenuItem value={1} primaryText="启用"/>
+            <MenuItem value={2} primaryText="废弃"/>
+          </SelectField>
+        </Col>
+      </Row>
+      <Row>
+        <Col span={16}></Col>
+        <Col span={8} className="device-query-btn">
+          <Button onClick={() => this.__reset_query()}>重置</Button>
+          <Button type="primary" onClick={() => this.__query_submit()}>查询</Button>
+        </Col>
+      </Row>
+      <Row className="device-setting-btn">
+        <Button size="small">新增</Button>
+        <Button size="small">启用</Button>
+        <Button size="small">废弃</Button>
+        <Button size="small">导入</Button>
+        <Button size="small">导出</Button>
+      </Row>
+      <Table rowSelection={rowSelection} columns={columns} dataSource={data}/>
+    </MainPanel>
   }
 }
 export default connect( state => {

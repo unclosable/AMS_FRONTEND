@@ -7,18 +7,13 @@ export const getCookie = (key) => {
     return null;
   }
 
-export const setCookie = (key, value) => {
-  let Days = 30;
-  let exp = new Date();
-  exp.setTime(exp.getTime() + Days * 24 * 60 * 60 * 1000);
-  document.cookie = key + "=" + escape(value) + ";expires=" + exp.toGMTString();
+export const setCookie = (cname, cvalue, exdays = 0.5) => {
+  const d = new Date();
+  d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+  const expires = "expires=" + d.toUTCString();
+  document.cookie = cname + "=" + cvalue + ";expires=" + expires;
 }
 
 export const deleteCookie = (key) => {
-  let exp = new Date();
-  exp.setTime(exp.getTime() - 1);
-  let cval = getCookie(key);
-  if (cval != null) {
-    document.cookie = key + "=" + cval + ";expires=" + exp.toGMTString();
-  }
+  setCookie(key, "", -1);
 }

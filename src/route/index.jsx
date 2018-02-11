@@ -3,7 +3,9 @@ import TestMain1 from '../component/test20.jsx';
 import HelloHome from '../component/home/index.jsx';
 import DeviceIndex from '../component/basic_device/index.jsx';
 import Materials from '../component/basic_materials/index.jsx';
+import MaterialsAdd from '../component/basic_materials/add.jsx';
 import Warehouse from '../component/basic_warehouses/index.jsx';
+import WarehouseAdd from '../component/basic_warehouses/add.jsx';
 export const pathMap = {
   '/': {
     text: 'HOME',
@@ -25,11 +27,25 @@ export const menuList = [
       }, {
         text: "物料",
         path: "/materials",
-        component: Materials
+        component: Materials,
+        children: [
+          {
+            text: "添加",
+            path: "/add",
+            component: MaterialsAdd
+          }
+        ]
       }, {
         text: "仓库",
         path: "/warehouse",
-        component: Warehouse
+        component: Warehouse,
+        children: [
+          {
+            text: "添加",
+            path: "/add",
+            component: WarehouseAdd
+          }
+        ]
       }
     ]
   }, {

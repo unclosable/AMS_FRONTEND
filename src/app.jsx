@@ -82,7 +82,7 @@ class App extends React.Component {
           const body = response.text().then( ( text ) => {
             if ( 'true' !== text ) {
               logout();
-              thiz.setState( { login: false } );
+              this.setState( { login: false } );
               message.info( '登陆失效' );
             }
           } );
@@ -94,7 +94,7 @@ class App extends React.Component {
       }
       setTimeout( checkStep, checkTime );
     }
-    checkStep();
+    setTimeout( checkStep, checkTime );
   }
   render() {
     const routes = []

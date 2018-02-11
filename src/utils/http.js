@@ -28,25 +28,29 @@ export const loged = () => {
 }
 export const logCheck = () => {
   let cookie = getCookie(cookieKey);
-  return get('/validate', {access_token: cookie})
+  return get('/validate')
 }
 export const get = (uri, params) => {
-  let theUrl = uri + '?';
-  if (!params || !params['access_token']) {
-    params = Object.assign({}, params, {access_token: getCookie(cookieKey)});
-  }
-  //fetch请求
-  return fetch('//' + baseHost + theUrl + queryString.stringify(params), {method: 'GET'})
+  const access_token = getCookie(cookieKey);
+  let theUrl = uri + (
+    params
+    ? '?'
+    : '');
+  return fetch('//' + baseHost + theUrl + queryString.stringify(params), {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${access_token}`
+    }
+  })
 }
 export const post = (uri, data) => {
+  const access_token = getCookie(cookieKey);
   const body = JSON.stringify(data);
   return fetch('//' + baseHost + uri, {
     method: 'POST',
-    credentials: 'include',
     headers: {
-      "Content-Type": "application/json",
-      "token": cookie,
-      "signature": hex_md5(cookie + body)
+      Authorization: `Bearer ${access_token}`,
+      "Content-Type": 'application/json'
     },
     body: body
   });

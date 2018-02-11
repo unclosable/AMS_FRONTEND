@@ -4,7 +4,7 @@ const path = require('path');
 const configFunc = require('./config');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const ExtraBabelPlugins = require('babel-plugin-import');
-
+const CleanWebpackPlugin = require('clean-webpack-plugin'); //installed via npm
 const config = configFunc(process.env.NODE_ENV);
 
 const entry = ("webpack/hot/only-dev-server", __dirname + "/index.js")
@@ -21,13 +21,15 @@ const plugins = config.DEV
 const sourceMapSet = config.DEV
   ? "#eval-source-map"
   : "";
-
+const outputFilename = config.DEV
+  ? 'bundle.js'
+  : "build/bundle-[hash:8].js"
 module.exports = {
   devtool: sourceMapSet,
   entry: entry, //已多次提及的唯一入口文件
   output: {
     path: __dirname + "/build", //打包后的文件存放的地方
-    filename: "bundle.js", //打包后输出文件的文件名
+    filename: outputFilename, //打包后输出文件的文件名
   },
   module: {
     loaders: [
@@ -63,12 +65,12 @@ module.exports = {
     ]
   },
   plugins: [
+    new CleanWebpackPlugin(['build']),
     new webpack.HotModuleReplacementPlugin(),
     new HtmlWebpackPlugin({
-      filename: 'index.html', template: 'index.html',
+      filename: 'index.html', template: 'index0.html',
       //favicon: resolveApp('scorpio-face.ico'),
-      inject: true,
-      path: config.JS_PATH
+      inject: true
     }),
     new webpack.ProvidePlugin({React: "react", react_dom: "react-dom"}),
     new webpack.DefinePlugin({config: JSON.stringify(config)}),
