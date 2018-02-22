@@ -4,7 +4,9 @@ import {
   Divider,
   Row,
   Col,
-  Button
+  Button,
+  Modal,
+  message
 } from 'antd';
 import TextField from 'material-ui/TextField';
 import SelectField from 'material-ui/SelectField';
@@ -20,7 +22,7 @@ import { get } from '../../utils/http.js';
 import ReactCSSTransitionGroup from "react-addons-css-transition-group";
 const { Column, ColumnGroup } = Table;
 
-const columns = [
+const columns = ( push ) => [
   {
     title: '序号',
     dataIndex: "id"
@@ -48,13 +50,19 @@ const columns = [
   }, {
     title: '备注',
     dataIndex: 'remark'
+  }, {
+    title: '操作',
+    key: 'action',
+    render: ( text, record ) => {
+      return <span>
+        <a onClick={() => push( '/basic/materials/edit', queryString.stringify( { id: record.id } ) )}>
+          修改
+        </a>
+      </span>
+    }
   }
 ];
 
-const data = [];
-for ( let i = 0; i < 1; i++ ) {
-  data.push( { key: i, name: `Edward King ${ i }`, age: 32, address: `London, Park Lane no. ${ i }` } );
-}
 const paramParse = ( value, defaultValue ) => {
   let re = parseInt( value );
   if ( isNaN( re ) || re === -1 ) {
@@ -74,16 +82,13 @@ class Materials extends React.Component {
       selectedRowKeys: [], // Check here to configure the default column
       loading: false,
       pushFunc: PUSH,
-      data: data
+      pageEnable: deviceState || 0,
+      modalVisible: false,
+      data: []
     }
     this.__load_data();
   }
-  start() {
-    this.setState( { loading: true } );
-    setTimeout( () => {
-      this.setState( { selectedRowKeys: [], loading: false } );
-    }, 1000 );
-  }
+
   onSelectChange( selectedRowKeys ) {
     this.setState( { selectedRowKeys } );
   }
@@ -119,8 +124,16 @@ class Materials extends React.Component {
       }
     } )
   }
+  __enable() {
+    const { selectedRowKeys, pageEnable } = this.state;
+    if ( selectedRowKeys.length <= 0 ) {
+      message.error( '未选择操作数据' );
+    } else {
+      this.setState( { modalVisible: true } );
+    }
+  }
   render() {
-    const { loading, selectedRowKeys } = this.state;
+    const { loading, selectedRowKeys, pageEnable, pushFunc } = this.state;
     const rowSelection = {
       selectedRowKeys,
       onChange: ( selectedRowKeys ) => this.onSelectChange( selectedRowKeys )
@@ -153,12 +166,22 @@ class Materials extends React.Component {
       </Row>
       <Row className="device-setting-btn">
         <Button size="small" onClick={() => this.state.pushFunc( '/basic/materials/add' )}>新增</Button>
-        <Button size="small">启用</Button>
-        <Button size="small">废弃</Button>
+        <Button size="small" onClick={() => this.__enable()}>{
+            parseInt( pageEnable ) === 0
+              ? '废弃'
+              : '启用'
+          }</Button>
+        <Modal title="确认" visible={this.state.modalVisible} onOk={() => this.setState( { modalVisible: false } )} onCancel={() => this.setState( { modalVisible: false } )}>
+          <p>确认将要{
+              parseInt( pageEnable ) === 0
+                ? '废弃'
+                : '启用'
+            }{selectedRowKeys.length}条数据？</p>
+        </Modal>
         <Button size="small">导入</Button>
         <Button size="small">导出</Button>
       </Row>
-      <Table rowSelection={rowSelection} columns={columns} dataSource={this.state.data}/>
+      <Table rowSelection={rowSelection} loading={false} columns={columns( pushFunc )} dataSource={this.state.data} rowKey={record => record.id}/>
     </MainPanel>
   }
 }
@@ -167,7 +190,6 @@ export default connect( state => {
 }, ( dispatch, ownProps ) => {
   return {
     PUSH: ( pathname, search ) => {
-      console.log( pathname );
       dispatch( push( { pathname, search } ) )
     }
   }

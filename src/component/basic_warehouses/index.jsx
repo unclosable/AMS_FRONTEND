@@ -16,29 +16,42 @@ import queryString from 'query-string';
 import '../../../less/component_basic_device.less';
 import { get } from '../../utils/http.js';
 import OrganizationsSelect from '../base/all_organizations_select.jsx';
+import { Redirect } from 'react-router-dom';
 const { Column, ColumnGroup } = Table;
 
-const columns = [
-  {
-    title: '序号',
-    dataIndex: "id"
-  }, {
-    title: '所属组织',
-    dataIndex: 'orgName'
-  }, {
-    title: '仓库名称',
-    dataIndex: 'name'
-  }, {
-    title: '更新人',
-    dataIndex: 'updatedBy'
-  }, {
-    title: '更新时间',
-    dataIndex: 'updatedAt'
-  }, {
-    title: '备注',
-    dataIndex: 'remark'
-  }
-];
+const columns = ( push ) => {
+  return [
+    {
+      title: '序号',
+      dataIndex: "id"
+    }, {
+      title: '所属组织',
+      dataIndex: 'orgName'
+    }, {
+      title: '仓库名称',
+      dataIndex: 'name'
+    }, {
+      title: '更新人',
+      dataIndex: 'updatedBy'
+    }, {
+      title: '更新时间',
+      dataIndex: 'updatedAt'
+    }, {
+      title: '备注',
+      dataIndex: 'remark'
+    }, {
+      title: '操作',
+      key: 'action',
+      render: ( text, record ) => {
+        return <span>
+          <a onClick={() => push( '/basic/warehouse/edit', queryString.stringify( { id: record.id } ) )}>
+            修改
+          </a>
+        </span>
+      }
+    }
+  ];
+}
 
 const paramParse = ( value ) => {
   let re = parseInt( value );
@@ -78,7 +91,8 @@ class Warehouse extends React.Component {
     } ).then( re => re.json().then( data => this.setState( { data } ) ) );
   }
   render() {
-    const { loading, selectedRowKeys } = this.state;
+    const { loading, selectedRowKeys, pushFunc } = this.state;
+    const theColumns = columns( pushFunc );
     const rowSelection = {
       selectedRowKeys,
       onChange: ( selectedRowKeys ) => this.setState( { selectedRowKeys } )
@@ -103,7 +117,7 @@ class Warehouse extends React.Component {
         <Button size="small" onClick={() => this.state.pushFunc( '/basic/warehouse/add' )}>新增</Button>
         <Button size="small">修改</Button>
       </Row>
-      <Table rowSelection={rowSelection} columns={columns} dataSource={this.state.data}/>
+      <Table rowSelection={rowSelection} columns={theColumns} dataSource={this.state.data} rowKey={record => record.id}/>
     </MainPanel>
 
   }

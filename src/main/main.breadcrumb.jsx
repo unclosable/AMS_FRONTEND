@@ -1,20 +1,20 @@
-import {Breadcrumb} from 'antd';
-import {connect} from 'react-redux';
-import {pathMap} from '../route/index.jsx'
+import { Breadcrumb } from 'antd';
+import { connect } from 'react-redux';
+import { pathMap } from '../route/index.jsx'
 
 class MainBreadcrumb extends React.Component {
   render() {
-    const {location} = this.props;
-    let path = pathMap[location.pathname];
+    const { location } = this.props;
+    let path = pathMap[ location.pathname ];
     let item;
-    if (path && path.parentPath) {
-      item = path.parentPath.map(p => {
+    if ( path && path.parentPath ) {
+      item = path.parentPath.map( p => {
         return <Breadcrumb.Item key={key++}>
-          {pathMap[p].text}
+          {pathMap[ p ].text}
         </Breadcrumb.Item>
-      });
+      } );
     }
-    if (!path) {
+    if ( !path ) {
       path = {
         text: '未知页面'
       }
@@ -31,12 +31,12 @@ class MainBreadcrumb extends React.Component {
   }
 }
 
-export default connect(state => {
-  return {location: state.router.location}
-}, (dispatch, ownProps) => {
+export default connect( state => {
+  return { location: state.router.location }
+}, ( dispatch, ownProps ) => {
   return {
-    push: (path) => {
-      dispatch({type: 'PUSH', path})
+    push: ( path ) => {
+      dispatch( { type: 'PUSH', path } )
     }
   }
-})(MainBreadcrumb);
+} )( MainBreadcrumb );

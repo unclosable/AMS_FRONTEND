@@ -38,7 +38,9 @@ class MainLayout extends React.Component {
     let componentKey = 0;
     for ( let path in pathMap ) {
       if ( pathMap[ path ].component ) 
-        routes.push( <Route path={path} exact={true} key={componentKey++} component={mainViewWrapper( pathMap[ path ].component )}/> )
+        routes.push( <Route path={path} exact={pathMap[ 'disexact' ]
+            ? false
+            : true} key={componentKey++} component={mainViewWrapper( pathMap[ path ].component )}/> )
     };
 
     return <Layout className="mainLayout"><MainHeader logoutFunc={this.props.logoutFunc}/>

@@ -4,8 +4,10 @@ import HelloHome from '../component/home/index.jsx';
 import DeviceIndex from '../component/basic_device/index.jsx';
 import Materials from '../component/basic_materials/index.jsx';
 import MaterialsAdd from '../component/basic_materials/add.jsx';
+import MaterialsEdit from '../component/basic_materials/edit.jsx';
 import Warehouse from '../component/basic_warehouses/index.jsx';
 import WarehouseAdd from '../component/basic_warehouses/add.jsx';
+import WarehouseEdit from '../component/basic_warehouses/edit.jsx';
 export const pathMap = {
   '/': {
     text: 'HOME',
@@ -33,6 +35,10 @@ export const menuList = [
             text: "添加",
             path: "/add",
             component: MaterialsAdd
+          }, {
+            text: "修改",
+            path: "/edit",
+            component: MaterialsEdit
           }
         ]
       }, {
@@ -44,6 +50,11 @@ export const menuList = [
             text: "添加",
             path: "/add",
             component: WarehouseAdd
+          }, {
+            text: "修改",
+            path: "/edit",
+            component: WarehouseEdit,
+            // disexact: true
           }
         ]
       }
