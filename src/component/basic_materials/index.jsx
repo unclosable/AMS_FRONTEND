@@ -18,8 +18,9 @@ import queryString from 'query-string';
 import '../../../less/component_basic_device.less';
 import MaterialTypeSelect from '../base/materials_type_select.jsx';
 import MaterialsNameSelect from '../base/name_select.jsx';
-import { get } from '../../utils/http.js';
+import { get, put } from '../../utils/http.js';
 import ReactCSSTransitionGroup from "react-addons-css-transition-group";
+import dateformat from 'dateformat';
 const { Column, ColumnGroup } = Table;
 
 const columns = ( push ) => [
@@ -37,7 +38,7 @@ const columns = ( push ) => [
     dataIndex: 'specification'
   }, {
     title: '单位',
-    dataIndex: 'unitId'
+    dataIndex: 'unitName'
   }, {
     title: '状态',
     dataIndex: 'enableds'
@@ -46,20 +47,25 @@ const columns = ( push ) => [
     dataIndex: 'updatedBy'
   }, {
     title: '更新时间',
-    dataIndex: 'updatedAt'
+    dataIndex: 'updateTime',
+    render: ( text, record ) => {
+      return <span>
+        {dateformat( new Date( text ), 'yyyy-mm-dd HH:MM' )}
+      </span>
+    }
   }, {
     title: '备注',
     dataIndex: 'remark'
-  }, {
-    title: '操作',
-    key: 'action',
-    render: ( text, record ) => {
-      return <span>
-        <a onClick={() => push( '/basic/materials/edit', queryString.stringify( { id: record.id } ) )}>
-          修改
-        </a>
-      </span>
-    }
+    // }, {
+    //   title: '操作',
+    //   key: 'action',
+    //   render: ( text, record ) => {
+    //     return <span>
+    //       <a onClick={() => push( '/basic/materials/edit', queryString.stringify( { id: record.id } ) )}>
+    //         修改
+    //       </a>
+    //     </span>
+    //   }
   }
 ];
 
@@ -124,13 +130,29 @@ class Materials extends React.Component {
       }
     } )
   }
-  __enable() {
+  __enable_btn() {
     const { selectedRowKeys, pageEnable } = this.state;
     if ( selectedRowKeys.length <= 0 ) {
       message.error( '未选择操作数据' );
     } else {
       this.setState( { modalVisible: true } );
     }
+  }
+  __enable_act() {
+    const { selectedRowKeys, pageEnable } = this.state;
+    put( `/materials/${ selectedRowKeys.join( ',' ) }`, {
+      enabled: pageEnable === 0
+        ? 1
+        : 0
+    } ).then( re => {
+      if ( re.status === 200 ) {
+        message.info( '操作成功' );
+        this.__query_submit();
+      } else {
+        message.error( '未知错误' );
+      }
+    } );
+    this.setState( { modalVisible: false } );
   }
   render() {
     const { loading, selectedRowKeys, pageEnable, pushFunc } = this.state;
@@ -166,12 +188,12 @@ class Materials extends React.Component {
       </Row>
       <Row className="device-setting-btn">
         <Button size="small" onClick={() => this.state.pushFunc( '/basic/materials/add' )}>新增</Button>
-        <Button size="small" onClick={() => this.__enable()}>{
+        <Button size="small" onClick={() => this.__enable_btn()}>{
             parseInt( pageEnable ) === 0
               ? '废弃'
               : '启用'
           }</Button>
-        <Modal title="确认" visible={this.state.modalVisible} onOk={() => this.setState( { modalVisible: false } )} onCancel={() => this.setState( { modalVisible: false } )}>
+        <Modal title="确认" visible={this.state.modalVisible} onOk={() => this.__enable_act()} onCancel={() => this.setState( { modalVisible: false } )}>
           <p>确认将要{
               parseInt( pageEnable ) === 0
                 ? '废弃'

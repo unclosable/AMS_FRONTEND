@@ -17,14 +17,15 @@ import '../../../less/component_basic_device.less';
 import { get } from '../../utils/http.js';
 import OrganizationsSelect from '../base/all_organizations_select.jsx';
 import { Redirect } from 'react-router-dom';
+import dateformat from 'dateformat';
 const { Column, ColumnGroup } = Table;
 
 const columns = ( push ) => {
   return [
     {
-      title: '序号',
-      dataIndex: "id"
-    }, {
+      //   title: '序号',
+      //   dataIndex: "id"
+      // }, {
       title: '所属组织',
       dataIndex: 'orgName'
     }, {
@@ -35,7 +36,12 @@ const columns = ( push ) => {
       dataIndex: 'updatedBy'
     }, {
       title: '更新时间',
-      dataIndex: 'updatedAt'
+      dataIndex: 'updatedAt',
+      render: ( text, record ) => {
+        return <span>
+          {dateformat( new Date( text ), 'yyyy-mm-dd HH:MM' )}
+        </span>
+      }
     }, {
       title: '备注',
       dataIndex: 'remark'
@@ -93,10 +99,10 @@ class Warehouse extends React.Component {
   render() {
     const { loading, selectedRowKeys, pushFunc } = this.state;
     const theColumns = columns( pushFunc );
-    const rowSelection = {
-      selectedRowKeys,
-      onChange: ( selectedRowKeys ) => this.setState( { selectedRowKeys } )
-    };
+    // const rowSelection = {
+    //   selectedRowKeys,
+    //   onChange: ( selectedRowKeys ) => this.setState( { selectedRowKeys } )
+    // };
     const hasSelected = selectedRowKeys.length > 0;
     return <MainPanel>
       <Row>
@@ -115,9 +121,8 @@ class Warehouse extends React.Component {
       </Row>
       <Row className="device-setting-btn">
         <Button size="small" onClick={() => this.state.pushFunc( '/basic/warehouse/add' )}>新增</Button>
-        <Button size="small">修改</Button>
       </Row>
-      <Table rowSelection={rowSelection} columns={theColumns} dataSource={this.state.data} rowKey={record => record.id}/>
+      <Table columns={theColumns} dataSource={this.state.data} rowKey={record => record.id}/>
     </MainPanel>
 
   }

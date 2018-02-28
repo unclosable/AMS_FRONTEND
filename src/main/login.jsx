@@ -156,7 +156,7 @@ class Login extends React.Component {
       loginFun();
     } ).catch( ( msg ) => {
       setTimeout( () => {
-        message.error( 'Wrong Login Infomation' );
+        message.error( 'Wrong Login Information' );
         this.changeMode( LONGIN );
       }, 3000 );
     } )

@@ -55,6 +55,30 @@ export const post = (uri, data) => {
     body: body
   });
 }
+export const put = (uri, data) => {
+  const access_token = getCookie(cookieKey);
+  const body = JSON.stringify(data);
+  return fetch('//' + baseHost + uri, {
+    method: 'PUT',
+    headers: {
+      Authorization: `Bearer ${access_token}`,
+      "Content-Type": 'application/json'
+    },
+    body: body
+  });
+}
+export const del = (uri, data) => {
+  const access_token = getCookie(cookieKey);
+  const body = JSON.stringify(data);
+  return fetch('//' + baseHost + uri, {
+    method: 'DELETE',
+    headers: {
+      Authorization: `Bearer ${access_token}`,
+      "Content-Type": 'application/json'
+    },
+    body: body
+  });
+}
 const baseInfo = {
   grant_type: "password",
   client_id: "ams-frontend",

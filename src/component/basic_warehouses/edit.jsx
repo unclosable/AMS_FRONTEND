@@ -6,7 +6,8 @@ import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import { Icon, Row, Col, Button, message } from 'antd';
 import OrganizationsSelect from '../base/all_organizations_select.jsx';
-import { post } from '../../utils/http.js';
+import { put, get } from '../../utils/http.js';
+import queryString from 'query-string';
 class WarehosesAdd extends React.Component {
   constructor( props ) {
     super( props );
@@ -15,27 +16,46 @@ class WarehosesAdd extends React.Component {
       organization: '',
       name: '',
       remark: '',
+      location: location,
       pushFunc: PUSH
+    }
+    this.__init();
+  }
+  __init() {
+    const { location, pushFunc } = this.state;
+    const query = queryString.parse( location.search );
+    if ( !query || !query.id ) {
+      pushFunc( '/basic/warehouse' );
+      message.error( '无效的查询条件' );
+    } else {
+      get( `/warehouses/${ query.id }` ).then( re => re.json().then( data => {
+        this.setState( { organization: data.orgId, name: data.name, remark: data.remark } )
+      } ) )
     }
   }
   __cancel() {
     this.state.pushFunc( '/basic/warehouse' )
   }
   __submit() {
-    const { organization, name, remark } = this.state;
-    post( '/warehouses', {
-      orgId: organization,
-      updatedBy: "tester",
-      name,
-      remark
-    } ).then( ( re ) => {
-      if ( re.status === 201 ) {
-        message.info( '创建成功' );
-        this.state.pushFunc( '/basic/warehouse' )
-      } else {
-        console.log( re );
-      }
-    } )
+    const { organization, name, remark, location, pushFunc } = this.state;
+    const query = queryString.parse( location.search );
+    if ( !query || !query.id ) {
+      pushFunc( '/basic/warehouse' );
+      message.error( '无效的条件' );
+    } else {
+      put( `/warehouses/${ query.id }`, {
+        orgId: organization,
+        name,
+        remark
+      } ).then( re => {
+        if ( re.status === 200 ) {
+          message.info( "修改成功" );
+          pushFunc( '/basic/warehouse' );
+        } else {
+          message.error( "未知错误" );
+        }
+      } )
+    }
   }
   render() {
     return <MainPanel>

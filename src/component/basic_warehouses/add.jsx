@@ -25,7 +25,6 @@ class WarehosesAdd extends React.Component {
     const { organization, name, remark } = this.state;
     post( '/warehouses', {
       orgId: organization,
-      updatedBy: "tester",
       name,
       remark
     } ).then( ( re ) => {
@@ -33,7 +32,7 @@ class WarehosesAdd extends React.Component {
         message.info( '创建成功' );
         this.state.pushFunc( '/basic/warehouse' )
       } else {
-        console.log( re );
+        message.error( "未知错误" );
       }
     } )
   }
