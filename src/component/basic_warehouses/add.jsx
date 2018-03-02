@@ -32,9 +32,9 @@ class WarehosesAdd extends React.Component {
         message.info( '创建成功' );
         this.state.pushFunc( '/basic/warehouse' )
       } else {
-        message.error( "未知错误" );
+        re.json().then( json => message.error( json.msg ) );
       }
-    } )
+    } ).catch( () => message.error( '未知错误' ) );
   }
   render() {
     return <MainPanel>

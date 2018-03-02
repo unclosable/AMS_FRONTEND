@@ -52,15 +52,15 @@ class WarehosesAdd extends React.Component {
           message.info( "修改成功" );
           pushFunc( '/basic/warehouse' );
         } else {
-          message.error( "未知错误" );
+          re.json().then( json => message.error( json.msg ) );
         }
-      } )
+      } ).catch( () => message.error( '未知错误' ) );
     }
   }
   render() {
     return <MainPanel>
       <Row>
-        <Col span={12}><OrganizationsSelect value={this.state.organization} onChange={( value ) => this.setState( { [ 'organization' ]: value } )}/></Col>
+        <Col span={12}><OrganizationsSelect value={this.state.organization} onChange={( value ) => this.setState( { [ 'organization' ]: value } )} disabled={true}/></Col>
         <Col span={12}>
           <TextField hintText="仓库名称" floatingLabelText="仓库名称" type="text" multiLine={true} value={this.state.name} onChange={( e ) => this.setState( { name: e.target.value } )}/>
         </Col>

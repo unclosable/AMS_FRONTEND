@@ -4,17 +4,18 @@ import { get } from '../../utils/http.js';
 class MaterialsUnitSelect extends React.Component {
   constructor( props ) {
     super( props );
-    const { typeid } = props;
     this.state = {
-      data: []
+      data: [],
+      typeid: null
     }
-    this.__loadData( typeid );
   }
   __loadData( typeid ) {
-    get( `/dicts/${ typeid }/details` ).then( re => re.json().then( data => this.setState( { data } ) ) );
-  }
+    if ( typeid !== this.state.typeid ) 
+      get( `/dicts/${ typeid }/details` ).then( re => re.json().then( data => this.setState( { data, typeid } ) ) );
+    }
   render() {
-    const { text, value, onChange } = this.props;
+    const { text, value, onChange, typeid } = this.props;
+    this.__loadData( typeid );
     return <SelectField floatingLabelText={text || "设备名称"} maxHeight={200} value={value} onChange={( event, index, value ) => onChange( value )}>
       {
         this.state.data.map( ( {

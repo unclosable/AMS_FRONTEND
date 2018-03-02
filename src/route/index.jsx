@@ -2,6 +2,7 @@ import TestMain from '../component/test2.jsx';
 import TestMain1 from '../component/test20.jsx';
 import HelloHome from '../component/home/index.jsx';
 import DeviceIndex from '../component/basic_device/index.jsx';
+import DeviceAdd from '../component/basic_device/add.jsx';
 import Materials from '../component/basic_materials/index.jsx';
 import MaterialsAdd from '../component/basic_materials/add.jsx';
 import MaterialsEdit from '../component/basic_materials/edit.jsx';
@@ -25,7 +26,14 @@ export const menuList = [
       {
         text: "设备",
         path: "/device",
-        component: DeviceIndex
+        component: DeviceIndex,
+        children: [
+          {
+            text: "添加",
+            path: "/add",
+            component: DeviceAdd
+          }
+        ]
       }, {
         text: "物料",
         path: "/materials",

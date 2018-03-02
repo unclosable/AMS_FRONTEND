@@ -10,11 +10,14 @@ class OrganizationsSelect extends React.Component {
     this.__loadData();
   }
   __loadData() {
-    get( '/organizations' ).then( re => re.json().then( data => this.setState( { data } ) ) );
+    get( '/organizations' ).then( re => {
+      if ( re.status === 200 ) 
+        re.json().then( data => this.setState( { data } ) )
+    } );
   }
   render() {
-    const { value, onChange } = this.props;
-    return <SelectField floatingLabelText="所属组织" maxHeight={200} value={value} onChange={( event, index, value ) => onChange( value )}>
+    const { value, onChange, disabled } = this.props;
+    return <SelectField floatingLabelText="所属组织" maxHeight={200} value={value} onChange={( event, index, value ) => onChange( value )} disabled={disabled}>
       {
         this.state.data.map( ( {
           id,

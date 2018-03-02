@@ -37,10 +37,10 @@ class MaterialsAdd extends React.Component {
       remark
     } ).then( ( re ) => {
       if ( re.status === 201 ) {
-        message.info( '添加成功' );
+        message.info( '修改成功' );
         this.state.pushFunc( '/basic/materials' );
       } else {
-        message.error( '添加失败' );
+        re.json().then( json => message.error( json.msg ) );
       }
     } )
   }

@@ -10,7 +10,11 @@ class MaterialsUnitSelect extends React.Component {
     this.__loadData();
   }
   __loadData() {
-    get( '/dicts', { except: [ '23' ] } ).then( re => re.json().then( data => this.setState( { data } ) ) );
+    get( '/dicts', { except: [ '23' ] } ).then( re => {
+      if ( re.status === 200 ) 
+        re.json().then( data => this.setState( { data } ) );
+      }
+    );
   }
   render() {
     const { value, onChange } = this.props;
