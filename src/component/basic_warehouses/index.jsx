@@ -4,7 +4,8 @@ import {
   Divider,
   Row,
   Col,
-  Button
+  Button,
+  Pagination
 } from 'antd';
 import TextField from 'material-ui/TextField';
 import SelectField from 'material-ui/SelectField';
@@ -70,34 +71,54 @@ class Warehouse extends React.Component {
   constructor( props ) {
     super( props );
     const { PUSH, location } = props;
-    const { organization, warehouseName } = queryString.parse( location.search );
+    const { organization, warehouseName, pageNum } = queryString.parse( location.search );
     this.state = {
       organization: paramParse( organization ),
       warehouseName: warehouseName || "",
       data: [],
       selectedRowKeys: [],
+      pageNum: paramParse( pageNum ),
+      pageInfo: {
+        current: 1,
+        total: 0,
+        pageSize: 10
+      },
       loading: false,
       pushFunc: PUSH
     }
     this.__load_data();
   }
 
-  __query_submit() {
+  __query_submit( actNum ) {
     const { organization, warehouseName } = this.state;
-    this.state.pushFunc( '/basic/warehouse', queryString.stringify( { organization, warehouseName } ) )
+    this.state.pushFunc( '/basic/warehouse', queryString.stringify( { organization, warehouseName, pageNum: actNum } ) )
   }
   __reset_query() {
     this.state.pushFunc()
   }
   __load_data() {
-    const { organization, warehouseName } = this.state;
+    const { organization, warehouseName, pageNum } = this.state;
     get( '/warehouses', {
+      pageNum,
       name: warehouseName,
       orgId: organization
-    } ).then( re => re.json().then( data => this.setState( { data } ) ) );
+    } ).then( re => re.json().then( data => {
+      const { list, total, pageSize, pageNum } = data;
+      this.setState( {
+        data: list,
+        pageInfo: {
+          total,
+          pageSize,
+          current: pageNum
+        }
+      } );
+    } ) );
+  }
+  __pageChange( pageNum, pageSize ) {
+    this.__query_submit( pageNum );
   }
   render() {
-    const { loading, selectedRowKeys, pushFunc } = this.state;
+    const { loading, selectedRowKeys, pageInfo, pushFunc } = this.state;
     const theColumns = columns( pushFunc );
     // const rowSelection = {
     //   selectedRowKeys,
@@ -122,7 +143,11 @@ class Warehouse extends React.Component {
       <Row className="device-setting-btn">
         <Button size="small" onClick={() => this.state.pushFunc( '/basic/warehouse/add' )}>新增</Button>
       </Row>
-      <Table columns={theColumns} dataSource={this.state.data} rowKey={record => record.id}/>
+      <Table columns={theColumns} dataSource={this.state.data} rowKey={record => record.id} pagination={Object.assign( {}, pageInfo, {
+          size: "small",
+          showTotal: ( total ) => `共 ${ total } 条`,
+          onChange: ( pageNum, pageSize ) => this.__pageChange( pageNum, pageSize )
+        } )}/>
     </MainPanel>
 
   }

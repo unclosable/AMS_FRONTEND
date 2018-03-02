@@ -80,16 +80,22 @@ class Materials extends React.Component {
   constructor( props ) {
     super( props );
     const { PUSH, location } = props;
-    const { deviceType, deviceState, deviceName } = queryString.parse( location.search );
+    const { deviceType, deviceState, deviceName, pageNum } = queryString.parse( location.search );
     this.state = {
       deviceType: paramParse( deviceType ),
       deviceState: paramParse( deviceState, 0 ),
       deviceName: paramParse( deviceName ),
+      pageNum: paramParse( pageNum ),
       selectedRowKeys: [], // Check here to configure the default column
       loading: false,
       pushFunc: PUSH,
       pageEnable: deviceState || 0,
       modalVisible: false,
+      pageInfo: {
+        current: 1,
+        total: 0,
+        pageSize: 10
+      },
       data: []
     }
     this.__load_data();
@@ -109,23 +115,32 @@ class Materials extends React.Component {
     this.setState( { deviceName: e.target.value } )
   }
 
-  __query_submit() {
+  __query_submit( actNum ) {
     const { deviceType, deviceState, deviceName } = this.state;
-    this.state.pushFunc( '/basic/materials', queryString.stringify( { deviceType, deviceState, deviceName } ) )
+    this.state.pushFunc( '/basic/materials', queryString.stringify( { deviceType, deviceState, deviceName, pageNum: actNum } ) )
   }
   __reset_query() {
     this.state.pushFunc()
   }
   __load_data() {
-    const { deviceType, deviceState, deviceName } = this.state;
+    const { deviceType, deviceState, deviceName, pageNum } = this.state;
     get( '/materials', {
+      pageNum,
       typeId: deviceType,
       enabled: deviceState,
       dictName: deviceName
     } ).then( ( re ) => {
       if ( re.status === 200 ) {
         re.json().then( ( data ) => {
-          this.setState( { data } );
+          const { list, total, pageSize, pageNum } = data;
+          this.setState( {
+            data: list,
+            pageInfo: {
+              total,
+              pageSize,
+              current: pageNum
+            }
+          } );
         } )
       }
     } )
@@ -154,8 +169,11 @@ class Materials extends React.Component {
     } );
     this.setState( { modalVisible: false } );
   }
+  __pageChange( pageNum, pageSize ) {
+    this.__query_submit( pageNum );
+  }
   render() {
-    const { loading, selectedRowKeys, pageEnable, pushFunc } = this.state;
+    const { loading, selectedRowKeys, pageEnable, pushFunc, pageInfo } = this.state;
     const rowSelection = {
       selectedRowKeys,
       onChange: ( selectedRowKeys ) => this.onSelectChange( selectedRowKeys )
@@ -203,7 +221,11 @@ class Materials extends React.Component {
         <Button size="small">导入</Button>
         <Button size="small">导出</Button>
       </Row>
-      <Table rowSelection={rowSelection} loading={false} columns={columns( pushFunc )} dataSource={this.state.data} rowKey={record => record.id}/>
+      <Table rowSelection={rowSelection} loading={false} columns={columns( pushFunc )} dataSource={this.state.data} rowKey={record => record.id} pagination={Object.assign( {}, pageInfo, {
+          size: "small",
+          showTotal: ( total ) => `共 ${ total } 条`,
+          onChange: ( pageNum, pageSize ) => this.__pageChange( pageNum, pageSize )
+        } )}/>
     </MainPanel>
   }
 }
