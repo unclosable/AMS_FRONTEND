@@ -38,6 +38,8 @@ class HelloHome extends React.Component {
               2018-02-09 基础数据维护界面查询展示功能，包含在URL中的query信息</Timeline.Item>
             <Timeline.Item color="green">
               2018-02-12 基础数据维护界面交互操作完善，添加，失效，跳转，动画等细节</Timeline.Item>
+            <Timeline.Item color="green">
+              2018-03-02 完善了已有的两个基础信息界面的操作，包含仓库信息的修改，并添加了分页的实现</Timeline.Item>
           </Timeline>
         </Panel>
         <Panel header="参与人员" key="4">
