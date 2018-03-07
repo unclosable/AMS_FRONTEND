@@ -108,7 +108,7 @@ class Device extends React.Component {
       pageNum,
       typeId: deviceType,
       enabled: deviceState,
-      dictName: deviceName
+      nameId: deviceName
     } ).then( ( re ) => {
       if ( re.status === 200 ) {
         re.json().then( ( data ) => {
